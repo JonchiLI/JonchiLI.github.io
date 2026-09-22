@@ -97,7 +97,7 @@ The result is a physical instrument controlled by an Arduino.
 
 ### Final Result
 
-**[]**
+![Final](images/9cfddf7b29dd5f77975835b4af233382.mp4)
 
 ---
 
