@@ -1,3 +1,4 @@
+- [Home Page](README.md)
 # Arduino Piano
 
 ## Overview
