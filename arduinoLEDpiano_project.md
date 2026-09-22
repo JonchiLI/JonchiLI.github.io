@@ -93,7 +93,7 @@ The result is a physical instrument controlled by an Arduino.
 
 ### Testing
 
-**[]**
+![Testing](images/51f8bdb4f1f6ed191d0f5cfc401743d5.mp4)
 
 ### Final Result
 
