@@ -93,11 +93,15 @@ The result is a physical instrument controlled by an Arduino.
 
 ### Testing
 
-![Testing](images/51f8bdb4f1f6ed191d0f5cfc401743d5.mp4)
+<video width="320" height="240" controls loop="" muted="" autoplay="">
+    <source src="https://github.com/ciaranbench/ciaranbench.github.io/raw/main/assets/dance_ex.mp4" />
+</video>
 
 ### Final Result
 
-![Final](images/9cfddf7b29dd5f77975835b4af233382.mp4)
+<video width="320" height="240" controls loop="" muted="" autoplay="">
+    <source src="https://github.com/ciaranbench/ciaranbench.github.io/raw/main/assets/dance_ex.mp4" />
+</video>
 
 ---
 
