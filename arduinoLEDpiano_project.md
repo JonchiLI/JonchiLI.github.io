@@ -138,7 +138,7 @@ This was important for my project because the Arduino needed to know exactly whi
 
 # Peer Support
 
-
+I would like to express my gratitude to Bruce Xie and Cruise Li for giving suggestion about the organization of wire. This really saved a lot of time for me as setup and also when programming. Mr. Rus also assisted me to come up with a more cohesive understanding of how certain parts of my coding I found on the Internet function in the whole programming.
 ---
 
 # Use-Case Reflection
