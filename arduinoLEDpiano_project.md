@@ -12,9 +12,7 @@ I chose this project because I wanted to combine programming with a physical dev
 
 Before starting this project, I already had some experience with basic Arduino programming and circuits. I knew how to connect simple components and use basic Arduino functions, but I wanted to become more comfortable working with multiple inputs and outputs at the same time.
 
-I chose the piano because I am interested in technology and programming, but I also wanted to make something more interactive. A piano was a good project because pressing a button immediately creates both a visual and audio response.
-
-This project allowed me to combine programming, electronics, and music into one device.
+I chose the piano because I also want to make something more interactive. A piano was a good project because pressing a button immediately creates both a visual and audio response, which allows me to combine programming, electronics, and music into one device.
 
 ---
 
