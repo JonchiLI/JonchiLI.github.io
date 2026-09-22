@@ -87,11 +87,9 @@ The seven buttons correspond to the seven notes from C to B. When I press a butt
 
 The result is a physical instrument controlled by an Arduino.
 
-**[]**
-
 ### Circuit
 
-**[]**
+![Circuit](images/06a7334dfa3c3a44cae13ad068938ac4.jpg)
 
 ### Testing
 
