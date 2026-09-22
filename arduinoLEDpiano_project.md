@@ -94,7 +94,7 @@ The result is a physical instrument controlled by an Arduino.
 ### Testing
 
 <video width="320" height="240" controls loop="" muted="" autoplay="">
-    <source src="" />
+    <source src="https://github.com/JonchiLI/JonchiLI.github.io/raw/refs/heads/main/images/51f8bdb4f1f6ed191d0f5cfc401743d5.mp4" />
 </video>
 
 ### Final Result
