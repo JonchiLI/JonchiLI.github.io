@@ -75,7 +75,7 @@ Understanding this helped me understand both the circuit and the code better.
 
 Another problem I had to watch for was making sure that each button matched the correct LED and note. Since there were seven of each, the connections had to stay organized.
 
-**[INSERT PHOTO HERE]**
+![Problem](images/dfe5c825afa71ca67d80e34c10fdf65e.jpg)
 
 ---
 
