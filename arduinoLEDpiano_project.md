@@ -60,7 +60,7 @@ First, I checked that the Arduino could detect the buttons. Then I checked that 
 
 Testing each part separately made it easier to find problems because I could focus on one part of the circuit at a time.
 
-**cb3f24fc42d38efcb1a91373fbf7c6ca.jpg**
+**[cb3f24fc42d38efcb1a91373fbf7c6ca.jpg]**
 
 ### A Problem I Had
 
@@ -89,19 +89,19 @@ The seven buttons correspond to the seven notes from C to B. When I press a butt
 
 The result is a physical instrument controlled by an Arduino.
 
-**[INSERT FINAL PROJECT PHOTO HERE]**
+**[]**
 
 ### Circuit
 
-**[INSERT CIRCUIT PHOTO HERE]**
+**[]**
 
 ### Testing
 
-**[INSERT TESTING PHOTO HERE]**
+**[]**
 
 ### Final Result
 
-**[INSERT FINAL PROJECT PHOTO HERE]**
+**[]**
 
 ---
 
@@ -142,7 +142,6 @@ This was important for my project because the Arduino needed to know exactly whi
 
 # Peer Support
 
-**[LEAVE THIS SECTION BLANK FOR NOW]**
 
 ---
 
