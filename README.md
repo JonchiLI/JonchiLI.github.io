@@ -17,5 +17,9 @@ For now, my goal is to keep learning, keep experimenting, and keep building.
 ## A Website I Like
 If you're interested in learning more about programming and technology, check out [Arduino](https://www.arduino.cc/).
 ![Technology and Innovation](https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80)
+## My Projects
+
+- [Cardboard Project](cardboard.md)
+- [Arduino Piano](arduinoLEDpiano_project.md)
 ---
 *Thanks for visiting my Innovator Journal!*
