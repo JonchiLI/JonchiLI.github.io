@@ -60,7 +60,7 @@ First, I checked that the Arduino could detect the buttons. Then I checked that 
 
 Testing each part separately made it easier to find problems because I could focus on one part of the circuit at a time.
 
-cb3f24fc42d38efcb1a91373fbf7c6ca.jpg
+!(cb3f24fc42d38efcb1a91373fbf7c6ca.jpg)
 
 ### A Problem I Had
 
