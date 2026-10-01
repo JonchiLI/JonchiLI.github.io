@@ -181,6 +181,8 @@ Angle,Distance(cm)
 
 20,37.4
 
+
+
 This showed that the motor and ultrasonic sensor were working together. The motor moved the sensor to different positions, and the HC-SR04 recorded the distance at each position.
 What I Learned
 The biggest thing I learned from this prototype was how multiple hardware components can work together as one system.
@@ -193,12 +195,6 @@ How an HC-SR04 ultrasonic sensor measures distance
 
 How to use digitalWrite() to control the sensor
 
-How to use the Arduino Stepper library
-
-How to collect and print sensor data
-
-How to combine existing code examples and modify them for a specific project
-
 Using existing code was also part of my learning process. I could not have written the entire program from scratch yet, so I used online documentation and examples, understood what the code was doing, and modified it for my own scanner.
 Next Steps
 This prototype is the minimum testable version of my larger 3D scanner project.
@@ -206,4 +202,3 @@ This prototype is the minimum testable version of my larger 3D scanner project.
 The next step is to figure out how to turn the distance measurements into a visual 2D scan. After that, I want to add another axis of movement so the sensor can measure at different heights.
 
 The eventual goal is to combine the horizontal and vertical measurements to create a 3D point cloud.
- 
