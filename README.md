@@ -21,5 +21,6 @@ If you're interested in learning more about programming and technology, check ou
 
 - [Cardboard Project](cardboard.md)
 - [Arduino Piano](arduinoLEDpiano_project.md)
+- [2DBeginnerScanner](3DScanner_SkateBoard.md)
 ---
 *Thanks for visiting my Innovator Journal!*
