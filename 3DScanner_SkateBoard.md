@@ -169,7 +169,7 @@ void loop() {
 Testing
 After uploading the code, I opened the Serial Monitor at 9600 baud.
 
-![pic](322e038461488632b096fc970aa8aa56.jpg)
+![pic](images/322e038461488632b096fc970aa8aa56.jpg)
 
 The Arduino printed the angle and distance measurements in this format:
 
