@@ -184,7 +184,9 @@ Angle,Distance(cm)
 
 20,37.4
 
-
+<video width="320" height="240" controls loop="" muted="" autoplay="">
+    <source src="https://github.com/JonchiLI/JonchiLI.github.io/raw/refs/heads/main/images/9cfddf7b29dd5f77975835b4af233382.mp4" />
+</video>
 
 This showed that the motor and ultrasonic sensor were working together. The motor moved the sensor to different positions, and the HC-SR04 recorded the distance at each position.
 What I Learned
