@@ -1,5 +1,6 @@
-2D Ultrasonic Scanner
-Project Goal
+#2D Ultrasonic Scanner
+
+##Project Goal
 For this project, my goal was to build a simple spinning 2D scanner as the minimum testable prototype for a more advanced 3D scanner.
 
 The basic idea is to rotate an ultrasonic sensor and measure the distance to objects at different angles. These measurements can eventually be used to create a visual representation of the scanned area.
@@ -166,6 +167,8 @@ void loop() {
 }
 Testing
 After uploading the code, I opened the Serial Monitor at 9600 baud.
+
+![pic](322e038461488632b096fc970aa8aa56.jpg)
 
 The Arduino printed the angle and distance measurements in this format:
 
