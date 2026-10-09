@@ -1,3 +1,7 @@
 theme: jekyll-theme-minimal
 title: Johnny's Innovator Journal
 description: Bookmark this to keep an eye on my project updates!
+
+markdown: kramdown
+kramdown:
+  input: GFM
