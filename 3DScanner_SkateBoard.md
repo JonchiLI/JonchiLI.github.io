@@ -1,3 +1,7 @@
+---
+title: 2D Ultrasonic Scanner
+---
+
 # 2D Ultrasonic Scanner
 
 ## Project Goal
