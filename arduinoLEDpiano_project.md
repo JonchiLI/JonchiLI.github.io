@@ -1,3 +1,7 @@
+---
+title: Arduino Piano Project
+---
+
 # Arduino Piano
 
 ## Overview
