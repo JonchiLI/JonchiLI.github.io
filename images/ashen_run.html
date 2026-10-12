@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASHEN RUN — Roguelite</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#080c18; color:#eaf2ff; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; display:flex; justify-content:center; min-height:100vh; }
+  .wrap { width:min(100%, 1100px); padding:14px; }
+  header { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin:0 0 10px; }
+  h1 { font-size:clamp(18px,3vw,27px); letter-spacing:3px; margin:0; color:#ff625f; }
+  .sub { color:#8fa6c9; font-size:12px; margin-top:4px; }
+  .hud { display:flex; gap:8px; flex-wrap:wrap; font-size:12px; }
+  .pill { background:#131d31; border:1px solid #2d4161; padding:8px 10px; border-radius:5px; }
+  canvas { width:100%; height:auto; display:block; border:2px solid #253755; background:#091326; image-rendering:pixelated; box-shadow:0 0 35px #101f3b; }
+  .controls { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; padding-top:10px; color:#aabbd5; font-size:12px; line-height:1.8; }
+  button { background:#172742; color:#f3f6ff; border:1px solid #405a80; padding:9px 14px; font:inherit; border-radius:4px; cursor:pointer; }
+  button:hover { background:#243b60; }
+  .mobile { display:none; gap:7px; margin-top:10px; justify-content:space-between; }
+  .mobile button { flex:1; touch-action:none; padding:14px 4px; }
+  @media (pointer:coarse) { .mobile { display:flex; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>ASHEN RUN</h1><div class="sub">A tiny original roguelite • survive the ruins</div></div>
+    <div class="hud">
+      <div class="pill">HP <span id="hp">100</span></div>
+      <div class="pill">CELLS <span id="cells">0</span></div>
+      <div class="pill">ROOM <span id="room">1</span></div>
+      <div class="pill">KILLS <span id="kills">0</span></div>
+    </div>
+  </header>
+  <canvas id="game" width="960" height="540" aria-label="Playable Ashen Run game"></canvas>
+  <div class="controls">
+    <div>MOVE <b>A / D</b> or <b>← / →</b> · JUMP <b>W / ↑ / SPACE</b><br>SLASH <b>J</b> · DODGE <b>K / SHIFT</b> · POTION <b>E</b></div>
+    <div><button id="restart">Restart run</button> <button id="pause">Pause</button></div>
+  </div>
+  <div class="mobile">
+    <button data-key="ArrowLeft">◀</button><button data-key="Space">JUMP</button><button data-key="ArrowRight">▶</button><button data-key="KeyJ">SLASH</button><button data-key="KeyK">DODGE</button>
+  </div>
+</div>
+<script>
+(() => {
+const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
+const W=canvas.width,H=canvas.height, keys={};
+let player, enemies, pickups, particles, platforms, room, cells, kills, paused, gameOver, banner, bannerTime, frame, potion;
+const ui = id => document.getElementById(id);
+function reset(){
+  player={x:95,y:360,w:27,h:42,vx:0,vy:0,hp:100,face:1,onGround:false,slash:0,dodge:0,invuln:0,attackCd:0};
+  room=1; cells=0;kills=0;paused=false;gameOver=false;frame=0;potion=1;
+  buildRoom();say('THE RUINS AWAKE',100);updateHUD();
+}
+function buildRoom(){
+  player.x=75;player.y=350;player.vx=0;player.vy=0;
+  platforms=[{x:0,y:475,w:960,h:65},{x:210,y:390,w:135,h:16},{x:440,y:325,w:145,h:16},{x:690,y:390,w:130,h:16}];
+  enemies=[];
+  const n=Math.min(2+room,7);
+  for(let i=0;i<n;i++){ let p=[260,390,520,720,850,610,330][i]; enemies.push({x:p+Math.random()*25,y:430,w:28,h:40,hp:2+Math.floor(room/3),max:2+Math.floor(room/3),vx:0,face:-1,stun:0,attack:0,kind:i%4===3?'ranger':'ghoul'}); }
+  pickups=[];
+  for(let i=0;i<Math.min(3+room,8);i++) pickups.push({x:145+i*95,y:Math.random()<.5?440:355,r:7,type:'cell',bob:Math.random()*6});
+  if(room%3===0) pickups.push({x:480,y:280,r:9,type:'potion',bob:0});
+}
+function say(s,t=100){banner=s;bannerTime=t;}
+function updateHUD(){ui('hp').textContent=Math.max(0,Math.ceil(player.hp));ui('cells').textContent=cells;ui('room').textContent=room;ui('kills').textContent=kills;}
+function hitEnemy(e,damage,knock){e.hp-=damage;e.stun=18;e.vx=knock;burst(e.x+e.w/2,e.y+15,'#ffbf69',8);if(e.hp<=0){kills++;cells+=2+Math.floor(Math.random()*3);if(Math.random()<.22)pickups.push({x:e.x,y:e.y,r:9,type:'potion',bob:0});enemies=enemies.filter(q=>q!==e);if(!enemies.length){say('ROOM CLEARED  •  +HEALTH',120);player.hp=Math.min(100,player.hp+18);cells+=5;setTimeout(()=>{if(!gameOver&&!paused){room++;buildRoom();say('ROOM '+room,90);updateHUD();}},1100);}}}
+function burst(x,y,color,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.7)*6,life:20+Math.random()*12,color});}
+function attack(){if(player.attackCd>0||gameOver||paused)return;player.slash=12;player.attackCd=22;let did=false;for(const e of [...enemies]){let dx=(e.x+e.w/2)-(player.x+player.w/2),dy=Math.abs((e.y+e.h/2)-(player.y+player.h/2));if(dx*player.face>-12&&dx*player.face<85&&dy<58){hitEnemy(e,1+((room>3&&Math.random()<.22)?1:0),player.face*6);did=true;}}if(!did)burst(player.x+player.w/2+player.face*35,player.y+20,'#83e8ff',3);}
+function dodge(){if(player.dodge<=0&&!gameOver&&!paused){player.dodge=13;player.invuln=18;player.vx=player.face*10;}}
+function jump(){if(player.onGround&&!gameOver&&!paused){player.vy=-11.5;player.onGround=false;}}
+function press(code){if(code==='KeyJ')attack();if(code==='KeyK'||code==='ShiftLeft'||code==='ShiftRight')dodge();if(code==='Space'||code==='ArrowUp'||code==='KeyW')jump();if(code==='KeyE'&&potion>0&&player.hp<100&&!gameOver){player.hp=Math.min(100,player.hp+38);potion--;say('POTION USED',45);updateHUD();}}
+window.addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown'].includes(e.code))e.preventDefault();if(!e.repeat)press(e.code);if(e.code==='KeyP')paused=!paused;});
+window.addEventListener('keyup',e=>keys[e.code]=false);
+document.querySelectorAll('[data-key]').forEach(b=>{const k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true;press(k)});for(const ev of ['pointerup','pointercancel','pointerleave'])b.addEventListener(ev,()=>keys[k]=false);});
+ui('restart').onclick=reset;ui('pause').onclick=()=>paused=!paused;
+function update(){
+ frame++;
+ if(paused||gameOver)return;
+ if(keys.ArrowLeft||keys.KeyA){player.vx-=.65;player.face=-1;}
+ if(keys.ArrowRight||keys.KeyD){player.vx+=.65;player.face=1;}
+ player.vx*=player.dodge>0?.94:.78;player.vx=Math.max(-5.2,Math.min(5.2,player.vx));
+ if(player.dodge>0)player.dodge--;
+ if(player.invuln>0)player.invuln--;
+ if(player.attackCd>0)player.attackCd--;
+ if(player.slash>0)player.slash--;
+ player.vy+=.55;player.x+=player.vx;player.y+=player.vy;player.onGround=false;
+ for(const p of platforms){if(player.x+player.w>p.x&&player.x<p.x+p.w&&player.y+player.h>=p.y&&player.y+player.h<=p.y+22&&player.vy>=0){player.y=p.y-player.h;player.vy=0;player.onGround=true;}}
+ if(player.x<0)player.x=0;if(player.x+player.w>W)player.x=W-player.w;
+ if(player.y>H+40){player.hp-=18;player.x=50;player.y=300;player.vy=0;}
+ for(const e of [...enemies]){
+   if(e.stun>0)e.stun--;else{
+    let dx=player.x-e.x;
+    if(e.kind==='ranger'&&Math.abs(dx)<250){e.vx*=.8;if(Math.abs(dx)<150&&e.attack<=0){e.attack=90;let dir=Math.sign(dx);particles.push({x:e.x,y:e.y+14,vx:dir*4,vy:0,life:65,color:'#a5ff70',bolt:true});}}
+    else {if(Math.abs(dx)>32)e.vx+=Math.sign(dx)*.12; e.vx=Math.max(-1.35,Math.min(1.35,e.vx));}
+   }
+   e.x+=e.vx;e.vx*=.88;if(e.attack>0)e.attack--;
+   if(Math.abs((e.x+e.w/2)-(player.x+player.w/2))<34&&Math.abs(e.y-player.y)<36&&e.attack<=0&&player.invuln<=0){player.hp-=8;player.invuln=38;e.attack=48;player.vx+=(player.x<e.x?-5:5);burst(player.x+14,player.y+20,'#ff5964',8);}
+ }
+ for(const p of [...pickups]){p.bob+=.08;if(Math.abs(player.x+player.w/2-p.x)<24&&Math.abs(player.y+player.h/2-(p.y+Math.sin(p.bob)*5))<38){if(p.type==='cell')cells+=1;else{potion=Math.min(3,potion+1);say('POTION +1',40);}pickups=pickups.filter(q=>q!==p);}}
+ for(const p of particles){if(p.bolt){p.x+=p.vx;if(Math.abs(p.x-player.x)<20&&player.invuln<=0&&Math.abs(p.y-player.y)<40){player.hp-=10;player.invuln=35;p.life=0;burst(player.x,player.y,'#ff5964',6);}}else{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;}p.life--;}
+ particles=particles.filter(p=>p.life>0);
+ if(player.hp<=0){player.hp=0;gameOver=true;say('YOU FELL IN THE RUINS',99999);}
+ if(bannerTime>0)bannerTime--;
+ updateHUD();
+}
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ // moonlit parallax sky
+ let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#10172f');g.addColorStop(.65,'#12385a');g.addColorStop(1,'#091321');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#ff555f';ctx.beginPath();ctx.arc(770,105,54,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#15213a';for(let i=0;i<17;i++){let x=i*65-15;let h=100+(i*47%150);ctx.fillRect(x,235-h,38,h+235);ctx.fillRect(x+8,220-h,7,20);ctx.fillRect(x+23,205-h,5,30);}
+ // distant mist
+ for(let i=0;i<5;i++){ctx.fillStyle=`rgba(52,129,171,${.035+i*.008})`;ctx.fillRect(0,250+i*37,W,18);}
+ // platforms
+ for(const p of platforms){ctx.fillStyle='#152c3c';ctx.fillRect(p.x,p.y,p.w,p.h);ctx.fillStyle='#35566a';ctx.fillRect(p.x,p.y,p.w,5);ctx.fillStyle='#0a1725';for(let x=p.x+8;x<p.x+p.w;x+=27)ctx.fillRect(x,p.y+10,13,4);}
+ // torches
+ for(let x of [50,610,900]){ctx.fillStyle='#583e38';ctx.fillRect(x,420,5,33);ctx.fillStyle='#ff6c37';ctx.fillRect(x-3,408+Math.sin(frame*.2)*2,11,15);ctx.fillStyle='#ffd66c';ctx.fillRect(x,410,4,8);}
+ // pickups
+ for(const p of pickups){let y=p.y+Math.sin(p.bob)*5;ctx.fillStyle=p.type==='cell'?'#69ffe0':'#ff5f71';ctx.beginPath();ctx.arc(p.x,y,p.r+3,0,Math.PI*2);ctx.fill();ctx.fillStyle=p.type==='cell'?'#e2fff7':'#ffd4dc';ctx.fillRect(p.x-2,y-5,4,10);}
+ // enemies
+ for(const e of enemies){ctx.save();ctx.translate(e.x+e.w/2,e.y);ctx.scale(e.face||-1,1);ctx.fillStyle=e.kind==='ranger'?'#9d7bd8':'#3dbe9c';ctx.fillRect(-12,7,24,26);ctx.fillStyle='#17273b';ctx.fillRect(-10,29,8,11);ctx.fillRect(3,29,8,11);ctx.fillStyle=e.kind==='ranger'?'#a8ff75':'#ffdb83';ctx.fillRect(-9,1,18,13);ctx.fillStyle='#17243b';ctx.fillRect(1,5,5,4);ctx.restore();ctx.fillStyle='#1b2133';ctx.fillRect(e.x-2,e.y-8,e.w+4,4);ctx.fillStyle='#ff6471';ctx.fillRect(e.x,e.y-7,(e.w)*(e.hp/e.max),2);}
+ // player blink
+ if(player.invuln===0||Math.floor(frame/3)%2===0){ctx.save();ctx.translate(player.x+player.w/2,player.y);ctx.scale(player.face,1);
+   ctx.fillStyle='#ed354d';ctx.fillRect(-10,4,20,9);ctx.fillStyle='#d7e7f3';ctx.fillRect(-8,11,16,20);ctx.fillStyle='#243750';ctx.fillRect(-8,28,7,14);ctx.fillRect(2,28,7,14);ctx.fillStyle='#ffcc9d';ctx.fillRect(-7,-2,15,15);ctx.fillStyle='#10182b';ctx.fillRect(1,2,7,4);ctx.fillStyle='#ff475d';ctx.fillRect(-12,3,8,6);
+   if(player.slash>0){ctx.strokeStyle='#c9f7ff';ctx.lineWidth=7;ctx.beginPath();ctx.arc(8,18,31,-1.15,.85);ctx.stroke();ctx.strokeStyle='#6ce8ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(8,18,37,-1.1,.8);ctx.stroke();}
+   ctx.restore();}
+ for(const p of particles){ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y, p.bolt?12:4,4);}
+ // hud overlay / title
+ ctx.fillStyle='rgba(4,10,22,.7)';ctx.fillRect(16,15,190,46);ctx.fillStyle='#ff5c67';ctx.fillRect(27,28,Math.max(0,160*player.hp/100),9);ctx.strokeStyle='#9eb4d1';ctx.strokeRect(27,28,160,9);ctx.fillStyle='#e8f2ff';ctx.font='12px monospace';ctx.fillText('HEALTH',27,23);ctx.fillText('POTIONS '+potion,27,51);
+ ctx.fillStyle='#a7c6e6';ctx.font='13px monospace';ctx.fillText('ASHEN RUN // SECTOR '+String(room).padStart(2,'0'),W-250,28);
+ if(bannerTime>0){ctx.fillStyle='rgba(3,8,18,.72)';ctx.fillRect(0,215,W,74);ctx.fillStyle='#f4f7ff';ctx.font='bold 25px monospace';ctx.textAlign='center';ctx.fillText(banner,W/2,260);ctx.textAlign='left';}
+ if(paused||gameOver){ctx.fillStyle='rgba(3,7,16,.78)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle=gameOver?'#ff6670':'#eaf2ff';ctx.font='bold 34px monospace';ctx.fillText(gameOver?'RUN ENDED':'PAUSED',W/2,230);ctx.font='16px monospace';ctx.fillStyle='#c0d3eb';ctx.fillText(gameOver?`Kills: ${kills}   Cells: ${cells}   Room: ${room}`:'Press Pause to continue',W/2,270);ctx.fillText('Click “Restart run” to play again',W/2,305);ctx.textAlign='left';}
+}
+function loop(){update();draw();requestAnimationFrame(loop);}
+particles=[];reset();loop();
+})();
+</script>
+</body>
+</html>
