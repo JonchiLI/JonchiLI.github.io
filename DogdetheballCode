@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dodge the Blocks</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #172033;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .game-wrap { text-align: center; }
+    canvas {
+      display: block;
+      background: #f2e8d5;
+      border: 3px solid white;
+      max-width: 95vw;
+      height: auto;
+    }
+    p { color: #d9e2f2; }
+  </style>
+</head>
+<body>
+  <div class="game-wrap">
+    <h1>Dodge the Blocks</h1>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <p>Use ← and → to move. Avoid the falling blocks. Press Space to restart.</p>
+  </div>
+
+  <script>
+    // 1. Find the canvas and its drawing tools.
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // 2. Store the game's changing information.
+    const player = { x: 275, y: 350, width: 50, height: 20, speed: 6 };
+    let blocks = [];
+    let score = 0;
+    let gameOver = false;
+    let frameCount = 0;
+    const keys = {};
+
+    // 3. Remember which keys are currently being pressed.
+    document.addEventListener("keydown", (event) => {
+      keys[event.key] = true;
+      if (event.code === "Space" && gameOver) resetGame();
+    });
+    document.addEventListener("keyup", (event) => {
+      keys[event.key] = false;
+    });
+
+    function resetGame() {
+      player.x = 275;
+      blocks = [];
+      score = 0;
+      frameCount = 0;
+      gameOver = false;
+    }
+
+    function addBlock() {
+      const size = 25 + Math.random() * 25;
+      blocks.push({
+        x: Math.random() * (canvas.width - size),
+        y: -size,
+        size: size,
+        speed: 2 + Math.random() * 2
+      });
+    }
+
+    function rectanglesOverlap(a, b) {
+      return a.x < b.x + b.size &&
+             a.x + a.width > b.x &&
+             a.y < b.y + b.size &&
+             a.y + a.height > b.y;
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      if (keys["ArrowLeft"]) player.x -= player.speed;
+      if (keys["ArrowRight"]) player.x += player.speed;
+
+      // Keep the player inside the canvas.
+      player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+
+      frameCount++;
+      if (frameCount % 45 === 0) addBlock();
+
+      for (const block of blocks) {
+        block.y += block.speed;
+        if (rectanglesOverlap(player, block)) gameOver = true;
+      }
+
+      // Remove blocks that have fallen off the bottom and award points.
+      const before = blocks.length;
+      blocks = blocks.filter(block => block.y < canvas.height);
+      score += before - blocks.length;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#245b78";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      ctx.fillStyle = "#d95d39";
+      for (const block of blocks) {
+        ctx.fillRect(block.x, block.y, block.size, block.size);
+      }
+
+      ctx.fillStyle = "#172033";
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, 15, 28);
+
+      if (gameOver) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.font = "32px Arial";
+        ctx.fillText("Game Over!", canvas.width / 2, canvas.height / 2);
+        ctx.font = "18px Arial";
+        ctx.fillText("Press Space to try again", canvas.width / 2, canvas.height / 2 + 35);
+        ctx.textAlign = "left";
+      }
+    }
+
+    // 4. Repeat update and draw once per animation frame.
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
