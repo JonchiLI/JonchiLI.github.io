@@ -1,3 +1,7 @@
+---
+title: Ai Game Autopsy
+---
+
 # Code Autopsy: Dodge the Blocks
 
 **Project:** AI-generated browser game  
