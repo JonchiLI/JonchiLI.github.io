@@ -73,6 +73,8 @@ if (rectanglesOverlap(player, block)) gameOver = true;
 
 The game checks whether the player overlaps a falling block. The function compares the edges of the two rectangles. If they overlap, `gameOver` becomes `true`. The `update()` function then stops changing the game state, and the `draw()` function displays the game-over message.
 
+![demo](images/IMG_9280.jpg)
+
 ## 6. Scoring
 
 ```javascript
