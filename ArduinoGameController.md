@@ -1,4 +1,4 @@
-# 🎮 Innovator Journal
+# Innovator Journal
 # Arduino Joystick-Controlled Catch the Star
 
 > **Project Overview:** Turning a simple computer game into a physical interactive experience using an Arduino Uno, an analog joystick, and Python.
