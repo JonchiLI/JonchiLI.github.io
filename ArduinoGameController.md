@@ -1,3 +1,7 @@
+---
+title: ArduinoGameController
+---
+
 # Innovator Journal
 # Arduino Joystick-Controlled Catch the Star
 
