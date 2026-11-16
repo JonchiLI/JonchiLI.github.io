@@ -1,5 +1,5 @@
 ---
-title: InterviewStudy
+title: Interview
 ---
 
 <div align="center">
